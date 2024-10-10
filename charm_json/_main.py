@@ -45,6 +45,9 @@ class _WriteableDatabag(_Databag, typing.MutableMapping[str, typing.Any]):
 
 
 class Relation(charm.Relation, typing.Mapping[str, typing.Mapping[str, typing.Any]]):
+    def __eq__(self, other):
+        return isinstance(other, Relation) and super().__eq__(other)
+
     def __getitem__(self, key):
         databag = super().__getitem__(key)
         if isinstance(databag, collections.abc.MutableMapping):
