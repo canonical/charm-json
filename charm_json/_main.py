@@ -145,6 +145,20 @@ class _MutableSequence(typing.MutableSequence[_ReadWriteJSON]):
         self._parent[self._parent_key] = self
 
 
+class _Encoder(json.JSONEncoder):
+    """Convert `_MutableMapping` to `dict` and `_MutableSequence` to `list`
+
+    `json` does not support `collections.abc.Mapping` or `collections.abc.Sequence`
+    """
+
+    def default(self, o):
+        if isinstance(o, _MutableMapping):
+            return o._data
+        if isinstance(o, _MutableSequence):
+            return o._data
+        return super().default(o)
+
+
 def _load(
     *,
     parent: typing.Union["_WriteableDatabag", _MutableMapping, _MutableSequence],
@@ -203,7 +217,7 @@ class _WriteableDatabag(_Databag, typing.MutableMapping[str, _ReadWriteJSON]):
                     f"{repr(key)} is set by Juju and is not JSON-encoded. It must be set to type 'str', got '{type(value).__name__}': {repr(value)}"
                 )
             self._databag[key] = value
-        self._databag[key] = json.dumps(value)
+        self._databag[key] = json.dumps(value, cls=_Encoder)
 
     def __delitem__(self, key):
         del self._databag[key]
