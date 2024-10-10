@@ -6,6 +6,12 @@ import charm
 
 
 class _Databag(typing.Mapping[str, typing.Any]):
+    _EXCLUDED_KEYS = ("egress-subnets", "ingress-address", "private-address")
+    """Keys set by Juju
+    
+    These values are not JSON-encoded
+    """
+
     def __init__(self, databag: typing.Mapping[str, str], /):
         self._databag = databag
 
@@ -13,6 +19,8 @@ class _Databag(typing.Mapping[str, typing.Any]):
         return f"{type(self).__name__}({repr(self._databag)})"
 
     def __getitem__(self, key: str):
+        if key in self._EXCLUDED_KEYS:
+            return self._databag[key]
         return json.loads(self._databag[key])
 
     def __iter__(self):
@@ -24,6 +32,12 @@ class _Databag(typing.Mapping[str, typing.Any]):
 
 class _WriteableDatabag(_Databag, typing.MutableMapping[str, typing.Any]):
     def __setitem__(self, key: str, value):
+        if key in self._EXCLUDED_KEYS:
+            if not isinstance(value, str):
+                raise TypeError(
+                    f"{repr(key)} is set by Juju and is not JSON-encoded. It must be set to type 'str', got '{type(value).__name__}': {repr(value)}"
+                )
+            self._databag[key] = value
         self._databag[key] = json.dumps(value)
 
     def __delitem__(self, key):
