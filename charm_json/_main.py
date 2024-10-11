@@ -223,7 +223,7 @@ class _WriteableDatabag(_Databag, typing.MutableMapping[str, _ReadWriteJSON]):
         del self._databag[key]
 
 
-class Relation(charm.Relation, typing.Mapping[str, typing.Mapping[str, typing.Any]]):
+class Relation(charm.Relation, typing.Mapping[str, typing.Mapping[str, _JSON]]):
     def __eq__(self, other):
         return isinstance(other, Relation) and super().__eq__(other)
 
@@ -234,27 +234,27 @@ class Relation(charm.Relation, typing.Mapping[str, typing.Mapping[str, typing.An
         return _Databag(databag)
 
     @property
-    def my_unit(self) -> typing.MutableMapping[str, typing.Any]:
+    def my_unit(self) -> typing.MutableMapping[str, _ReadWriteJSON]:
         return super().my_unit
 
     @property
-    def my_app(self) -> typing.Mapping[str, typing.Any]:
+    def my_app(self) -> typing.Mapping[str, _JSON]:
         return super().my_app
 
     @property
     def other_units(
         self,
-    ) -> typing.Mapping[charm.Unit, typing.Mapping[str, typing.Any]]:
+    ) -> typing.Mapping[charm.Unit, typing.Mapping[str, _JSON]]:
         return super().other_units
 
     @property
-    def other_app(self) -> typing.Mapping[str, typing.Any]:
+    def other_app(self) -> typing.Mapping[str, _JSON]:
         return super().other_app
 
 
 class PeerRelation(Relation, charm.PeerRelation):
     @property
-    def all_units(self) -> typing.Mapping[charm.Unit, typing.Mapping[str, typing.Any]]:
+    def all_units(self) -> typing.Mapping[charm.Unit, typing.Mapping[str, _JSON]]:
         return super().all_units
 
 
