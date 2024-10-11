@@ -22,6 +22,8 @@ _ReadWriteJSON = typing.Union[
     float,
     bool,
     None,
+    # Allow setting `typing.Mapping` or `typing.Sequence` (will be cast to mutable equivalent)
+    _JSON,
 ]
 
 
