@@ -47,12 +47,6 @@ class _Databag(typing.Mapping[str, _JSON]):
         `types.MappingProxyType` is not technically immutable, but for this purpose it is
         effectively immutable
         """
-        if isinstance(data, collections.abc.MutableMapping):
-            return types.MappingProxyType(
-                {key: cls._freeze(value) for key, value in data.items()}
-            )
-        if isinstance(data, collections.abc.MutableSequence):
-            return tuple(cls._freeze(value) for value in data)
         if (
             isinstance(data, str)
             or isinstance(data, int)
@@ -61,6 +55,12 @@ class _Databag(typing.Mapping[str, _JSON]):
             or data is None
         ):
             return data
+        if isinstance(data, collections.abc.MutableMapping):
+            return types.MappingProxyType(
+                {key: cls._freeze(value) for key, value in data.items()}
+            )
+        if isinstance(data, collections.abc.MutableSequence):
+            return tuple(cls._freeze(value) for value in data)
         raise TypeError
 
     def __getitem__(self, key: str):
@@ -175,6 +175,14 @@ def _load(
     `_WriteableDatabag.__setitem__()` will be called and that mutation will be written to the
     databag
     """
+    if (
+        isinstance(data, str)
+        or isinstance(data, int)
+        or isinstance(data, float)
+        or isinstance(data, bool)
+        or data is None
+    ):
+        return data
     if isinstance(data, collections.abc.Mapping):
         # We need to create `mapping` before we can populate it with correctly typed values,
         # since any mutable objects inside will need a reference to their parent (`mapping`).
@@ -193,14 +201,6 @@ def _load(
             # Initial value set should not update parent
             sequence._data[index] = value
         return sequence
-    if (
-        isinstance(data, str)
-        or isinstance(data, int)
-        or isinstance(data, float)
-        or isinstance(data, bool)
-        or data is None
-    ):
-        return data
     raise TypeError(
         f"Expected type 'str', 'int', 'float', 'bool', 'NoneType', 'Mapping', or 'Sequence'; got '{type(data).__name__}': {repr(data)}"
     )
@@ -230,7 +230,7 @@ class Relation(charm.Relation, typing.Mapping[str, typing.Mapping[str, _JSON]]):
         return isinstance(other, Relation) and super().__eq__(other)
 
     def __getitem__(self, key):
-        databag = super().__getitem__(key)
+        databag = charm.Relation.__getitem__(self, key)
         if isinstance(databag, collections.abc.MutableMapping):
             return _WriteableDatabag(databag)
         return _Databag(databag)
