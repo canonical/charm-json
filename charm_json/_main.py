@@ -252,7 +252,12 @@ class Relation(charm.Relation, typing.Mapping[str, typing.Mapping[str, _JSON]]):
         return super().other_app
 
 
-class PeerRelation(Relation, charm.PeerRelation):
+class PeerRelation(
+    Relation,
+    charm.PeerRelation,
+    # Improve type hint on `[]` or `.get()`
+    typing.Mapping[str, typing.Mapping[str, _JSON]],
+):
     @property
     def all_units(self) -> typing.Mapping[charm.Unit, typing.Mapping[str, _JSON]]:
         return super().all_units
