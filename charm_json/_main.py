@@ -259,9 +259,7 @@ class PeerRelation(Relation, charm.PeerRelation):
 
 
 class Endpoint(charm.Endpoint):
-    @property
-    def _relations(self):
-        return [Relation(relation.id) for relation in super()._relations]
+    _Relation = Relation
 
     @property
     def relation(self) -> typing.Optional[Relation]:
