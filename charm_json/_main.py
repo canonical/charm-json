@@ -6,8 +6,8 @@ import typing
 import charm
 
 _JSON = typing.Union[
-    typing.Mapping[str, "_ReadOnlyJSON"],
-    typing.Sequence["_ReadOnlyJSON"],
+    typing.Mapping[str, "_JSON"],
+    typing.Sequence["_JSON"],
     str,
     int,
     float,
