@@ -108,6 +108,16 @@ class _MutableMapping(typing.MutableMapping[str, _ReadWriteJSON]):
     def __len__(self):
         return len(self._data)
 
+    def setdefault(self, key, default=None, /):
+        try:
+            return self[key]
+        except KeyError:
+            pass
+        self[key] = default
+        # Return `self[key]` instead of `default` so that `default` is converted to
+        # `_MutableMapping` or `_MutableSequence` if applicable
+        return self[key]
+
 
 class _MutableSequence(typing.MutableSequence[_ReadWriteJSON]):
     """Updates `parent` collection when mutated"""
@@ -223,6 +233,16 @@ class _WriteableDatabag(_Databag, typing.MutableMapping[str, _ReadWriteJSON]):
 
     def __delitem__(self, key):
         del self._databag[key]
+
+    def setdefault(self, key, default=None, /):
+        try:
+            return self[key]
+        except KeyError:
+            pass
+        self[key] = default
+        # Return `self[key]` instead of `default` so that `default` is converted to
+        # `_MutableMapping` or `_MutableSequence` if applicable
+        return self[key]
 
 
 class Relation(charm.Relation, typing.Mapping[str, typing.Mapping[str, _JSON]]):
