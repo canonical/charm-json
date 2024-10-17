@@ -212,7 +212,7 @@ def _load(
             sequence._data[index] = value
         return sequence
     raise TypeError(
-        f"Expected type 'str', 'int', 'float', 'bool', 'NoneType', 'Mapping', or 'Sequence'; got '{type(data).__name__}': {repr(data)}"
+        f"Expected type 'str', 'int', 'float', 'bool', 'NoneType', 'Mapping', or 'Sequence'; got {repr(type(data).__name__)}: {repr(data)}"
     )
 
 
@@ -226,7 +226,7 @@ class _WriteableDatabag(_Databag, typing.MutableMapping[str, _ReadWriteJSON]):
         if key in self._EXCLUDED_KEYS:
             if not isinstance(value, str):
                 raise TypeError(
-                    f"{repr(key)} is set by Juju and is not JSON-encoded. It must be set to type 'str', got '{type(value).__name__}': {repr(value)}"
+                    f"{repr(key)} is set by Juju and is not JSON-encoded. It must be set to type 'str', got {repr(type(value).__name__)}: {repr(value)}"
                 )
             self._databag[key] = value
         self._databag[key] = json.dumps(value, cls=_Encoder)
