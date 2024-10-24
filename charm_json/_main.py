@@ -260,7 +260,11 @@ class Relation(charm.Relation, typing.Mapping[str, typing.Mapping[str, _JSON]]):
         return super().my_unit
 
     @property
-    def my_app(self) -> typing.Mapping[str, _JSON]:
+    def my_app(
+        self,
+    ) -> typing.Union[
+        typing.Mapping[str, _JSON], typing.MutableMapping[str, _ReadWriteJSON]
+    ]:
         return super().my_app
 
     @property
