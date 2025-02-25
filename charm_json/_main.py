@@ -6,13 +6,7 @@ import typing
 import charm
 
 _JSON = typing.Union[
-    typing.Mapping[str, "_JSON"],
-    typing.Sequence["_JSON"],
-    str,
-    int,
-    float,
-    bool,
-    None,
+    typing.Mapping[str, "_JSON"], typing.Sequence["_JSON"], str, int, float, bool, None
 ]
 _ReadWriteJSON = typing.Union[
     typing.MutableMapping[str, "_ReadWriteJSON"],
@@ -56,9 +50,7 @@ class _Databag(typing.Mapping[str, _JSON]):
         ):
             return data
         if isinstance(data, collections.abc.MutableMapping):
-            return types.MappingProxyType(
-                {key: cls._freeze(value) for key, value in data.items()}
-            )
+            return types.MappingProxyType({key: cls._freeze(value) for key, value in data.items()})
         if isinstance(data, collections.abc.MutableSequence):
             return tuple(cls._freeze(value) for value in data)
         raise TypeError
@@ -81,9 +73,7 @@ class _MutableMapping(typing.MutableMapping[str, _ReadWriteJSON]):
     def __init__(
         self,
         *,
-        parent: typing.Union[
-            "_WriteableDatabag", "_MutableMapping", "_MutableSequence"
-        ],
+        parent: typing.Union["_WriteableDatabag", "_MutableMapping", "_MutableSequence"],
         parent_key: typing.Union[str, int],
         data: collections.abc.Mapping,
     ):
@@ -150,9 +140,7 @@ class _MutableSequence(typing.MutableSequence[_ReadWriteJSON]):
     def insert(self, index, value):
         self._data.insert(index, _load(parent=self, parent_key=index, data=value))
         for index, value in enumerate(self._data):
-            if isinstance(value, _MutableMapping) or isinstance(
-                value, _MutableSequence
-            ):
+            if isinstance(value, _MutableMapping) or isinstance(value, _MutableSequence):
                 value._parent_key = index
         self._parent[self._parent_key] = self
 
