@@ -257,24 +257,34 @@ class Relation(charm.Relation, typing.Mapping[str, typing.Mapping[str, _JSON]]):
 
     @property
     def my_unit(self) -> typing.MutableMapping[str, _ReadWriteJSON]:
+        """This unit's data"""
         return super().my_unit
 
     @property
-    def my_app(
-        self,
-    ) -> typing.Union[
-        typing.Mapping[str, _JSON], typing.MutableMapping[str, _ReadWriteJSON]
-    ]:
-        return super().my_app
+    def my_app_rw(self) -> typing.Optional[typing.MutableMapping[str, _ReadWriteJSON]]:
+        """This app's data (read-write)
+
+        `None` if this unit is not leader
+        """
+        return super().my_app_rw
 
     @property
-    def other_units(
-        self,
-    ) -> typing.Mapping[charm.Unit, typing.Mapping[str, _JSON]]:
+    def other_units(self) -> typing.Mapping[charm.Unit, typing.Mapping[str, _JSON]]:
+        """Other units' data
+
+        In a non-peer relation, this is the data of the other app's units
+        In a peer relation, this is the data of this app's units, excluding this unit
+
+        In a subordinate (non-peer) relation, this data only includes the other app's unit that is
+        deployed to the same machine as this unit
+        Note: subordinate charms can have non-subordinate relations and principal charms can have
+        subordinate relations
+        """
         return super().other_units
 
     @property
     def other_app(self) -> typing.Mapping[str, _JSON]:
+        """Other app's data"""
         return super().other_app
 
 
@@ -286,7 +296,26 @@ class PeerRelation(
 ):
     @property
     def all_units(self) -> typing.Mapping[charm.Unit, typing.Mapping[str, _JSON]]:
+        """All units' data
+
+        Includes this unit's data
+        """
         return super().all_units
+
+    @property
+    def my_app_ro(self) -> typing.Mapping[str, _JSON]:
+        """This app's data (read-only)"""
+        return super().my_app_ro
+
+    @property
+    def other_app(self) -> typing.Mapping[str, _JSON]:
+        """This app's data
+
+        In a peer relation, the "other" app is this unit's app
+
+        Same as `my_app_ro`
+        """
+        return super().other_app
 
 
 class Endpoint(charm.Endpoint):
