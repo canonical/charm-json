@@ -3,7 +3,7 @@ import json
 import types
 import typing
 
-import charm
+import charm_ as charm
 
 _JSON = typing.Union[
     typing.Mapping[str, "_JSON"], typing.Sequence["_JSON"], str, int, float, bool, None
