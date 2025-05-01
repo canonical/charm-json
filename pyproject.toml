@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
-charm-api = {git = "https://github.com/canonical/charm-api"}
+charm-api = ">=0.1.1"
 
 [build-system]
 requires = ["poetry-core"]
