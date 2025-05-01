@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "charm-json"
-version = "0.1.0"
+version = "0.0.0"  # Overriden by poetry-dynamic-versioning
 description = ""
 authors = ["Carl Csaposs <carl.csaposs@canonical.com>"]
 
@@ -8,9 +8,15 @@ authors = ["Carl Csaposs <carl.csaposs@canonical.com>"]
 python = ">=3.8"
 charm-api = ">=0.1.1"
 
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+dirty = true
+strict = true
+
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0,<2.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.ruff]
 target-version = "py38"
