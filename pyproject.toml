@@ -3,7 +3,6 @@ name = "charm-json"
 version = "0.1.0"
 description = ""
 authors = ["Carl Csaposs <carl.csaposs@canonical.com>"]
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
